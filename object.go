@@ -67,17 +67,13 @@ func (o *Object) UnmarshalJSON(d []byte) error {
 	if err != nil {
 		return err
 	}
-	switch v := tok.(type) {
-	case json.Delim:
-		switch v {
-		case '{':
-			if err := o.unmarshalJSON(dec); err != nil {
-				return fmt.Errorf("failed to unmarshal object: error at offset %d: %v", dec.InputOffset(), err)
-			}
-			return nil
+	if delim, ok := tok.(json.Delim); ok && delim == '{' {
+		if err := o.unmarshalJSON(dec); err != nil {
+			return fmt.Errorf("failed to unmarshal object: error at offset %d: %w", dec.InputOffset(), err)
 		}
+		return nil
 	}
-	return fmt.Errorf("expected \"{\", got %q", tok)
+	return fmt.Errorf(`expected "{", got %q`, tok)
 }
 
 func (o *Object) unmarshalJSON(d *json.Decoder) error {

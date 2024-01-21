@@ -31,17 +31,13 @@ func (a *Array) UnmarshalJSON(d []byte) error {
 	if err != nil {
 		return err
 	}
-	switch v := tok.(type) {
-	case json.Delim:
-		switch v {
-		case '[':
-			if err := a.unmarshalJSON(dec); err != nil {
-				return fmt.Errorf("failed to unmarshal array: error at offset %d: %v", dec.InputOffset(), err)
-			}
-			return nil
+	if delim, ok := tok.(json.Delim); ok && delim == '[' {
+		if err := a.unmarshalJSON(dec); err != nil {
+			return fmt.Errorf("failed to unmarshal array: error at offset %d: %w", dec.InputOffset(), err)
 		}
+		return nil
 	}
-	return fmt.Errorf("expected \"[\", got %q", tok)
+	return fmt.Errorf(`expected "[", got %q`, tok)
 }
 
 func (a *Array) unmarshalJSON(d *json.Decoder) error {
