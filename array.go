@@ -10,10 +10,10 @@ type Array []any
 
 func (a Array) MarshalJSON() ([]byte, error) {
 	var b bytes.Buffer
-	b.WriteString("[")
+	b.WriteRune('[')
 	for i, v := range a {
 		if i != 0 {
-			b.WriteString(",")
+			b.WriteRune(',')
 		}
 		res, err := json.Marshal(v)
 		if err != nil {
@@ -21,7 +21,7 @@ func (a Array) MarshalJSON() ([]byte, error) {
 		}
 		b.Write(res)
 	}
-	b.WriteString("]")
+	b.WriteRune(']')
 	return b.Bytes(), nil
 }
 

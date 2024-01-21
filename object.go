@@ -40,24 +40,24 @@ func (o Object) Range(f func(k string, v any) bool) {
 
 func (o Object) MarshalJSON() ([]byte, error) {
 	var b bytes.Buffer
-	b.WriteString("{")
+	b.WriteRune('{')
 	for i, k := range o.keys {
 		if i != 0 {
-			b.WriteString(",")
+			b.WriteRune(',')
 		}
 		res, err := json.Marshal(k)
 		if err != nil {
 			return nil, err
 		}
 		b.Write(res)
-		b.WriteString(":")
-		res, err = json.Marshal(o.m[k])
+		b.WriteRune(':')
+		res, err = json.Marshal(o.m[k].v)
 		if err != nil {
 			return nil, err
 		}
 		b.Write(res)
 	}
-	b.WriteString("}")
+	b.WriteRune('}')
 	return b.Bytes(), nil
 }
 
