@@ -113,6 +113,15 @@ func (o *Object) Set(k string, v any) {
 	o.m[k] = v
 }
 
+func (o Object) Get(k string) (any, bool) {
+	v, ok := o.m[k]
+	return v, ok
+}
+
+func (o *Object) Delete(k string) {
+	delete(o.m, k)
+}
+
 func (o Object) Range(f func(k string, v any) bool) {
 	for _, k := range o.keys {
 		if !f(k, o.m[k]) {
