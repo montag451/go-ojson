@@ -88,7 +88,9 @@ func (o *Object) unmarshalJSON(d *json.Decoder) error {
 		}
 		key := tok.(string)
 		var v Any
-		v.unmarshalJSON(d)
+		if err := v.unmarshalJSON(d); err != nil {
+			return err
+		}
 		o.Set(key, v.Value())
 	}
 	_, err := d.Token()

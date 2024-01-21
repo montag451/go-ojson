@@ -47,7 +47,9 @@ func (a *Array) UnmarshalJSON(d []byte) error {
 func (a *Array) unmarshalJSON(d *json.Decoder) error {
 	for d.More() {
 		var v Any
-		v.unmarshalJSON(d)
+		if err := v.unmarshalJSON(d); err != nil {
+			return err
+		}
 		*a = append(*a, v.Value())
 	}
 	_, err := d.Token()
