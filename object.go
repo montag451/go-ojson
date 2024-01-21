@@ -69,7 +69,7 @@ func (o *Object) UnmarshalJSON(d []byte) error {
 	}
 	if delim, ok := tok.(json.Delim); ok && delim == '{' {
 		if err := o.unmarshalJSON(dec); err != nil {
-			return fmt.Errorf("failed to unmarshal object: error at offset %d: %w", dec.InputOffset(), err)
+			return err
 		}
 		return nil
 	}

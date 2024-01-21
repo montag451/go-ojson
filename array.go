@@ -33,7 +33,7 @@ func (a *Array) UnmarshalJSON(d []byte) error {
 	}
 	if delim, ok := tok.(json.Delim); ok && delim == '[' {
 		if err := a.unmarshalJSON(dec); err != nil {
-			return fmt.Errorf("failed to unmarshal array: error at offset %d: %w", dec.InputOffset(), err)
+			return err
 		}
 		return nil
 	}
