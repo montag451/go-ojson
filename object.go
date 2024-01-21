@@ -6,33 +6,46 @@ import (
 	"fmt"
 )
 
+type objectValue struct {
+	i int
+	v any
+}
+
 type Object struct {
-	m    map[string]any
+	m    map[string]objectValue
 	keys []string
 }
 
 func (o *Object) Set(k string, v any) {
 	if o.m == nil {
-		o.m = make(map[string]any)
+		o.m = make(map[string]objectValue)
 	}
-	if _, ok := o.m[k]; !ok {
+	oval, ok := o.m[k]
+	if !ok {
+		oval.i = len(o.keys)
 		o.keys = append(o.keys, k)
 	}
-	o.m[k] = v
+	oval.v = v
+	o.m[k] = oval
 }
 
 func (o Object) Get(k string) (any, bool) {
 	v, ok := o.m[k]
-	return v, ok
+	return v.v, ok
 }
 
 func (o *Object) Delete(k string) {
+	v, ok := o.m[k]
+	if !ok {
+		return
+	}
 	delete(o.m, k)
+	o.keys = append(o.keys[:v.i], o.keys[v.i+1:]...)
 }
 
 func (o Object) Range(f func(k string, v any) bool) {
 	for _, k := range o.keys {
-		if !f(k, o.m[k]) {
+		if !f(k, o.m[k].v) {
 			return
 		}
 	}
