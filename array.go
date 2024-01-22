@@ -32,10 +32,7 @@ func (a *Array) UnmarshalJSON(d []byte) error {
 		return err
 	}
 	if delim, ok := tok.(json.Delim); ok && delim == '[' {
-		if err := a.unmarshalJSON(dec); err != nil {
-			return err
-		}
-		return nil
+		return a.unmarshalJSON(dec)
 	}
 	return fmt.Errorf(`expected "[", got %q`, tok)
 }

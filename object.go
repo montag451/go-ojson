@@ -81,10 +81,7 @@ func (o *Object) UnmarshalJSON(d []byte) error {
 		return err
 	}
 	if delim, ok := tok.(json.Delim); ok && delim == '{' {
-		if err := o.unmarshalJSON(dec); err != nil {
-			return err
-		}
-		return nil
+		return o.unmarshalJSON(dec)
 	}
 	return fmt.Errorf(`expected "{", got %q`, tok)
 }
