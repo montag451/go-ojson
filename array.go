@@ -8,23 +8,6 @@ import (
 
 type Array []any
 
-func (a Array) MarshalJSON() ([]byte, error) {
-	var b bytes.Buffer
-	b.WriteRune('[')
-	for i, v := range a {
-		if i != 0 {
-			b.WriteRune(',')
-		}
-		res, err := json.Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b.Write(res)
-	}
-	b.WriteRune(']')
-	return b.Bytes(), nil
-}
-
 func (a *Array) UnmarshalJSON(d []byte) error {
 	dec := json.NewDecoder(bytes.NewReader(d))
 	tok, err := dec.Token()
