@@ -6,8 +6,12 @@ import (
 	"fmt"
 )
 
+// Array represents a slice of any values. When using it to decode a
+// JSON array it ensures that embedded JSON objects are decoded as
+// [Object].
 type Array []any
 
+// MarshalJSON implements the [json.Marshaler] interface.
 func (a *Array) UnmarshalJSON(d []byte) error {
 	dec := json.NewDecoder(bytes.NewReader(d))
 	tok, err := dec.Token()
@@ -20,6 +24,7 @@ func (a *Array) UnmarshalJSON(d []byte) error {
 	return fmt.Errorf(`expected "[", got %q`, tok)
 }
 
+// UnmarshalJSON implements the [json.Unmarshaler] interface.
 func (a *Array) unmarshalJSON(d *json.Decoder) error {
 	for d.More() {
 		var v Any

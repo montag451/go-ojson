@@ -11,42 +11,54 @@ type objectValue struct {
 	v any
 }
 
+// Object represents a JSON object. It is the equivalent of
+// map[string]any but when used to decode/encode a JSON object it
+// preserves the object keys order. It can also be used as an ordered
+// map.
 type Object struct {
 	m    map[string]objectValue
 	keys []string
 }
 
+// NewObject creates a new [Object] ready to be used.
 func NewObject() *Object {
 	return &Object{
 		m: make(map[string]objectValue),
 	}
 }
 
-func (o *Object) Set(k string, v any) {
-	oval, ok := o.m[k]
+// Set sets the value for a key
+func (o *Object) Set(key string, value any) {
+	oval, ok := o.m[key]
 	if !ok {
 		oval.i = len(o.keys)
-		o.keys = append(o.keys, k)
+		o.keys = append(o.keys, key)
 	}
-	oval.v = v
-	o.m[k] = oval
+	oval.v = value
+	o.m[key] = oval
 }
 
-func (o *Object) Get(k string) (any, bool) {
-	v, ok := o.m[k]
-	return v.v, ok
+// Get returns the value stored in the object for a key, or nil if no
+// value is present. The ok result indicates whether value was found
+// in the object.
+func (o *Object) Get(key string) (v any, ok bool) {
+	v, ok = o.m[key]
+	return
 }
 
-func (o *Object) Delete(k string) {
-	v, ok := o.m[k]
+// Delete deletes the value for a key.
+func (o *Object) Delete(key string) {
+	v, ok := o.m[key]
 	if !ok {
 		return
 	}
-	delete(o.m, k)
+	delete(o.m, key)
 	o.keys = append(o.keys[:v.i], o.keys[v.i+1:]...)
 }
 
-func (o *Object) Range(f func(k string, v any) bool) {
+// Range calls f sequentially for each key and value present in the
+// object. If f returns false, range stops the iteration.
+func (o *Object) Range(f func(key string, value any) bool) {
 	for _, k := range o.keys {
 		if !f(k, o.m[k].v) {
 			return
@@ -54,15 +66,19 @@ func (o *Object) Range(f func(k string, v any) bool) {
 	}
 }
 
+// Len returns the number of elements in the object.
 func (o *Object) Len() int {
 	return len(o.keys)
 }
 
-func (o *Object) Reset() {
+// Clear deletes all entries in the object, resulting in an empty
+// object.
+func (o *Object) Clear() {
 	o.m = make(map[string]objectValue)
 	o.keys = nil
 }
 
+// MarshalJSON implements the [json.Marshaler] interface.
 func (o *Object) MarshalJSON() ([]byte, error) {
 	var b bytes.Buffer
 	b.WriteRune('{')
@@ -86,6 +102,7 @@ func (o *Object) MarshalJSON() ([]byte, error) {
 	return b.Bytes(), nil
 }
 
+// UnmarshalJSON implements the [json.Unmarshaler] interface.
 func (o *Object) UnmarshalJSON(d []byte) error {
 	dec := json.NewDecoder(bytes.NewReader(d))
 	tok, err := dec.Token()
