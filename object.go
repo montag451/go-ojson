@@ -16,10 +16,13 @@ type Object struct {
 	keys []string
 }
 
-func (o *Object) Set(k string, v any) {
-	if o.m == nil {
-		o.m = make(map[string]objectValue)
+func NewObject() *Object {
+	return &Object{
+		m: make(map[string]objectValue),
 	}
+}
+
+func (o *Object) Set(k string, v any) {
 	oval, ok := o.m[k]
 	if !ok {
 		oval.i = len(o.keys)
@@ -29,7 +32,7 @@ func (o *Object) Set(k string, v any) {
 	o.m[k] = oval
 }
 
-func (o Object) Get(k string) (any, bool) {
+func (o *Object) Get(k string) (any, bool) {
 	v, ok := o.m[k]
 	return v.v, ok
 }
@@ -43,7 +46,7 @@ func (o *Object) Delete(k string) {
 	o.keys = append(o.keys[:v.i], o.keys[v.i+1:]...)
 }
 
-func (o Object) Range(f func(k string, v any) bool) {
+func (o *Object) Range(f func(k string, v any) bool) {
 	for _, k := range o.keys {
 		if !f(k, o.m[k].v) {
 			return
@@ -51,7 +54,7 @@ func (o Object) Range(f func(k string, v any) bool) {
 	}
 }
 
-func (o Object) MarshalJSON() ([]byte, error) {
+func (o *Object) MarshalJSON() ([]byte, error) {
 	var b bytes.Buffer
 	b.WriteRune('{')
 	for i, k := range o.keys {

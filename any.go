@@ -31,7 +31,7 @@ func (a *Any) unmarshalJSON(d *json.Decoder) error {
 	case json.Delim:
 		switch v {
 		case '{':
-			var o Object
+			o := NewObject()
 			if err := o.unmarshalJSON(d); err != nil {
 				return err
 			}
