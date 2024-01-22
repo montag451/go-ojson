@@ -54,6 +54,15 @@ func (o *Object) Range(f func(k string, v any) bool) {
 	}
 }
 
+func (o *Object) Len() int {
+	return len(o.keys)
+}
+
+func (o *Object) Reset() {
+	o.m = make(map[string]objectValue)
+	o.keys = nil
+}
+
 func (o *Object) MarshalJSON() ([]byte, error) {
 	var b bytes.Buffer
 	b.WriteRune('{')
