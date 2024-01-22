@@ -37,11 +37,11 @@ func (a *Any) unmarshalJSON(d *json.Decoder) error {
 			}
 			a.v = o
 		case '[':
-			var array Array
-			if err := array.unmarshalJSON(d); err != nil {
+			var arr Array
+			if err := arr.unmarshalJSON(d); err != nil {
 				return err
 			}
-			a.v = array
+			a.v = []any(arr)
 		}
 	default:
 		a.v = v
