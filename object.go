@@ -74,8 +74,8 @@ func (o *Object) Len() int {
 // Clear deletes all entries in the object, resulting in an empty
 // object.
 func (o *Object) Clear() {
-	o.m = make(map[string]objectValue)
-	o.keys = nil
+	clear(o.m)
+	o.keys = o.keys[:0]
 }
 
 // MarshalJSON implements the [json.Marshaler] interface.
