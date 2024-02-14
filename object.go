@@ -42,8 +42,8 @@ func (o *Object) Set(key string, value any) {
 // value is present. The ok result indicates whether value was found
 // in the object.
 func (o *Object) Get(key string) (v any, ok bool) {
-	v, ok = o.m[key]
-	return
+	ov, ok := o.m[key]
+	return ov.v, ok
 }
 
 // Delete deletes the value for a key.
