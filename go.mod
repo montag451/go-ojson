@@ -1,3 +1,3 @@
 module github.com/montag451/go-ojson
 
-go 1.21.5
+go 1.21
