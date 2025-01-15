@@ -26,12 +26,16 @@ func (a *Array) UnmarshalJSON(d []byte) error {
 
 // UnmarshalJSON implements the [json.Unmarshaler] interface.
 func (a *Array) unmarshalJSON(d *json.Decoder) error {
+	*a = (*a)[:0]
 	for d.More() {
 		var v Any
 		if err := v.unmarshalJSON(d); err != nil {
 			return err
 		}
 		*a = append(*a, v.Value())
+	}
+	if *a == nil {
+		*a = []any{}
 	}
 	_, err := d.Token()
 	return err
